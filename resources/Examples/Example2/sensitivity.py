@@ -114,4 +114,10 @@ if __name__ == '__main__':
     m_sample, mu_sample = np.meshgrid(m_sample, mu_sample)
     m_sample = np.reshape(m_sample,[100])
     mu_sample = np.reshape(mu_sample,[100])
-
+    
+    recording = {}
+    
+    for i, ii in zip(m_sample,mu_sample):
+        recording = recording + HNL_siren(i,ii)
+        
+    np.savetxt('./output.txt', recording)
