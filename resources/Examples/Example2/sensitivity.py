@@ -115,9 +115,14 @@ if __name__ == '__main__':
     m_sample = np.reshape(m_sample,[100])
     mu_sample = np.reshape(mu_sample,[100])
     
-    recording = {}
+    with open('output.txt', 'w') as file:
     
-    for i, ii in zip(m_sample,mu_sample):
-        recording = recording + HNL_siren(i,ii)
-        
-    np.savetxt('./output.txt', recording)
+        for i, ii in zip(m_sample,mu_sample):
+            # Call your function
+            result_array = HNL_siren(i,ii)
+            
+            # Convert the array to a string with scientific notation and 16 decimal places
+            array_string = ', '.join([f'{x:.16e}' for x in result_array])
+            
+            # Write to file without iteration number
+            file.write(f"{array_string}\n")

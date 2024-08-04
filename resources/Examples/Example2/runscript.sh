@@ -1,10 +1,13 @@
 #!/bin/bash
-#SBATCH -c 1                # Number of cores (-c)
-#SBATCH -t 1-00:00          # Runtime in D-HH:MM, minimum of 10 minutes
-#SBATCH -p serial_requeue   # Partition to submit to
-#SBATCH --mem=100           # Memory pool for all cores (see also --mem-per-cpu)
-#SBATCH -o myoutput_%j.out  # File to which STDOUT will be written, %j inserts jobid
-#SBATCH -e myerrors_%j.err  # File to which STDERR will be written, %j inserts jobid
+#SBATCH -n 16                   # Number of cores (-c)
+#SBATCH -t 3:00:00              # Runtime in D-HH:MM, minimum of 10 minutes
+#SBATCH -p shared               # Partition to submit to
+#SBATCH --mem=32G               # Memory pool for all cores (see also --mem-per-cpu)
+#SBATCH --open-mode=append
+#SBATCH -o myoutput_%j.out      # File to which STDOUT will be written, %j inserts jobid
+#SBATCH -e myerrors_%j.err      # File to which STDERR will be written, %j inserts jobid
+#SBATCH --mail-type=END
+#SBATCH --mail-user=msl63@cam.ac.uk
 
 # Load any necessary modules
 module load python/3.10.13-fasrc01
@@ -13,12 +16,15 @@ module load python/3.10.13-fasrc01
 mamba activate siren_dn
 
 # Define paths
-SCRATCH_DIR="$SCRATCH/arguelles_delgado_lab/Everyone/msliu/SIREN-ND280_Upgrade/resources/Examples/Example2/"
+SCRATCH_DIR="$SCRATCH/arguelles_delgado_lab/Everyone/msliu/SIREN-ND280_Upgrade/resources/Examples/Example2"
 HOME_DIR="$HOME/results"
 
+# Create directories if they don't exist
+mkdir -p $SCRATCH_DIR
+mkdir -p $HOME_DIR
 
 # Run your job, outputting results to SCRATCH
-python your_script.py --output $SCRATCH_DIR/results.txt
+python sensitivity.py
 
 # After job completes, copy important results to home directory
 cp $SCRATCH_DIR/output.txt $HOME_DIR/
