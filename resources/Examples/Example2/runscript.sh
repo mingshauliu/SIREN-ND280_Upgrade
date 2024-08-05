@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -n 16                   # Number of cores (-c)
+#SBATCH -n 32                   # Number of cores (-c)
 #SBATCH -t 3:00:00              # Runtime in D-HH:MM, minimum of 10 minutes
 #SBATCH -p shared               # Partition to submit to
 #SBATCH --mem=32G               # Memory pool for all cores (see also --mem-per-cpu)
@@ -24,11 +24,10 @@ mkdir -p $SCRATCH_DIR
 mkdir -p $HOME_DIR
 
 # Run your job, outputting results to SCRATCH
-python sensitivity.py
+python3 sensitivity.py
 
 # After job completes, copy important results to home directory
 cp $SCRATCH_DIR/output.txt $HOME_DIR/
-cp $SCRATCH_DIR/results.txt $HOME_DIR/
 
 # Deactivate the Mamba environment
 mamba deactivate

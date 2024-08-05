@@ -1,16 +1,8 @@
 import awkward as awk
-import matplotlib.pyplot as plt
-from matplotlib.pyplot import cm
-from matplotlib.colors import LogNorm
-plt.style.use("../figures.mplstyle")
 import numpy as np
 import os
-try: os.mkdir("figures")
-except FileExistsError: pass
 import siren
 from siren.SIREN_Controller import SIREN_Controller
-from scipy.interpolate import Rbf, griddata
-
 
 
 def HNL_siren(m4, tr4):
@@ -31,7 +23,7 @@ def HNL_siren(m4, tr4):
     }
 
     # Number of events to inject
-    events_to_inject = 100000
+    events_to_inject = 1000
 
     # Expeirment to run
     experiment = "ND280UPGRD"
@@ -103,26 +95,32 @@ def HNL_siren(m4, tr4):
     path="ND280UPGRD_Dipole_M%2.2e_mu%2.2e_example.parquet"%(m4,tr4)
     data = awk.from_parquet("output/"+path)
     flag = data["secondary_types"]==22 * data["in_fiducial"]
-    return [[m4,tr4,np.sum(np.transpose(data["event_weight"]*flag*POT)[1][1])*0.0006]]
+    return [m4,tr4,np.sum(np.transpose(data["event_weight"]*flag*POT)[1][1])*0.0006]
 
 
 
+print(HNL_siren(0.02, 5e-8))
 
-if __name__ == '__main__':
-    m_sample = np.geomspace(0.02,0.4,10)
-    mu_sample = np.geomspace(5e-8,1e-2,10)
-    m_sample, mu_sample = np.meshgrid(m_sample, mu_sample)
-    m_sample = np.reshape(m_sample,[100])
-    mu_sample = np.reshape(mu_sample,[100])
-    
-    with open('output.txt', 'w') as file:
-    
-        for i, ii in zip(m_sample,mu_sample):
-            # Call your function
-            result_array = HNL_siren(i,ii)
-            
-            # Convert the array to a string with scientific notation and 16 decimal places
-            array_string = ', '.join([f'{x:.16e}' for x in result_array])
-            
-            # Write to file without iteration number
-            file.write(f"{array_string}\n")
+# n_m = 10
+# n_mu = 10
+# m_sample = np.geomspace(0.02,0.4,n_m)
+# mu_sample = np.geomspace(5e-8,1e-2,n_mu)
+# m_sample, mu_sample = np.meshgrid(m_sample, mu_sample)
+# m_sample = np.reshape(m_sample,[n_m*n_mu])
+# mu_sample = np.reshape(mu_sample,[n_m*n_mu])
+
+# with open('recording.txt', 'a') as file:
+
+
+#     for i, ii in zip(m_sample,mu_sample):
+#         # Call your function
+#         result = HNL_siren(i,ii)
+          
+#         # if not isinstance(result, np.ndarray):
+#         #     result = np.array(result)
+        
+#         # # Convert the array to a string with scientific notation and 16 decimal places
+#         # array_string = ', '.join([f'{x:.16e}' for x in result])
+        
+#         # Write to file without iteration number
+#         file.write(f"{result}\n")
